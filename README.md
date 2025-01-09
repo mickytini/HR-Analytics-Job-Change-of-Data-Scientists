@@ -123,10 +123,3 @@ The cleaned datasets are loaded into a SQLite database as a Data Warehouse for f
 - **Programming Language:** Python
 
 ---
-
-## Installation and Usage
-
-1. **Clone this repository:**
-   ```bash
-   git clone https://github.com/your-username/hr-analytics.git
-   cd hr-analytics
