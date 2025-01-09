@@ -1,109 +1,72 @@
 # HR Analytics: Job Change of Data Scientists
 
-## Overview
+## Project Overview
 
-This project focuses on analyzing HR data related to job changes among data scientists. The analysis includes extracting, transforming, and loading data from multiple sources into a SQLite database for further analysis.
-
----
-
-## Data Sources
-
-### **1. Enrollies' Data**
-- **Description:** Contains data submitted via Google Forms by enrollees.
-- **Columns:**
-  - `enrollee_id`: Unique ID of an enrollee.
-  - `full_name`: Full name of an enrollee.
-  - `city`: Name of the enrollee's city.
-  - `gender`: Gender of an enrollee.
-- **Source:** [Google Sheet](https://docs.google.com/spreadsheets/d/1VCkHwBjJGRJ21asd9pxW4_0z2PWuKhbLR3gUHm-p4GI/edit?usp=sharing)
+This project aims to analyze HR data to understand factors influencing job changes among data scientists. By integrating data from multiple sources, cleaning and transforming it, and storing it in a centralized database, we create a comprehensive dataset ready for analysis. The project also demonstrates how to schedule and automate the ETL process on a platform.
 
 ---
 
-### **2. Enrollies' Education**
-- **Description:** Contains manually collected data on enrollees' education.
-- **Columns:**
-  - `enrollee_id`: Unique identifier for each enrollee.
-  - `enrolled_university`: Enrollment status (e.g., No enrollment, Part-time course, Full-time course).
-  - `education_level`: Highest level of education attained (e.g., Graduate, Masters).
-  - `major_discipline`: Primary field of study (e.g., STEM, Business Degree).
-- **Source:** [Excel File](https://assets.swisscoding.edu.vn/company_course/enrollies_education.xlsx)
+## Data Overview
+
+### Data Sources
+
+1. **Enrollies' Data**
+   - **Description:** Contains basic information about enrollees.
+   - **Source:** [Google Sheet](https://docs.google.com/spreadsheets/d/1VCkHwBjJGRJ21asd9pxW4_0z2PWuKhbLR3gUHm-p4GI/edit?usp=sharing)
+
+2. **Enrollies' Education**
+   - **Description:** Details about education background.
+   - **Source:** [Excel File](https://assets.swisscoding.edu.vn/company_course/enrollies_education.xlsx)
+
+3. **Enrollies' Working Experience**
+   - **Description:** Information on work experience.
+   - **Source:** [CSV File](https://assets.swisscoding.edu.vn/company_course/work_experience.csv)
+
+4. **Training Hours**
+   - **Description:** Data on training hours completed by enrollees.
+   - **Source:** MySQL database.
+
+5. **City Development Index**
+   - **Description:** Development indices of various cities.
+   - **Source:** [City Development Index](https://sca-programming-school.github.io/city_development_index/index.html)
+
+6. **Employment**
+   - **Description:** Employment status of enrollees.
+   - **Source:** MySQL database.
 
 ---
 
-### **3. Enrollies' Working Experience**
-- **Description:** Survey data on working experience.
-- **Columns:**
-  - `enrollee_id`: Unique identifier for each enrollee.
-  - `relevent_experience`: Indicates whether the enrollee has relevant work experience.
-  - `experience`: Years of work experience (e.g., >20, <1).
-  - `company_size`: Size of the company (e.g., 50-99, 100-500).
-  - `company_type`: Type of the company (e.g., Pvt Ltd, Funded Startup).
-  - `last_new_job`: Years since the last job change.
-- **Source:** [CSV File](https://assets.swisscoding.edu.vn/company_course/work_experience.csv)
+## Steps in the Process
+
+### **1. Data Extraction**
+- Extracted data from various sources:
+  - **Google Sheets:** Using the `gspread` library for direct access.
+  - **Excel/CSV Files:** Downloaded and read into Pandas DataFrames.
+  - **MySQL Database:** Connected using `pymysql` and retrieved data via SQL queries.
+  - **HTML Pages:** Scraped using Python's `requests` library.
+
+**Decision:** Using different extraction methods ensures compatibility with diverse data formats.
 
 ---
 
-### **4. Training Hours**
-- **Description:** Data on training hours completed by each student.
-- **Source:** MySQL Database
-  - **Host:** `112.213.86.31`
-  - **Port:** `3360`
-  - **Login:** `etl_practice`
-  - **Password:** `550814`
-  - **Database Name:** `company_course`
-  - **Table Name:** `training_hours`
+### **2. Data Cleaning and Transformation**
+Key transformations:
+- **Handling Missing Values:**
+  - Example: For the `gender` column in `Enrollies' Data`, missing values were replaced with the mode (most common value).
+- **Standardizing Data Types:**
+  - Example: Converted `company_size` in `Working Experience` dataset to categorical for optimized storage and processing.
+- **Combining Datasets:**
+  - Joined data on `enrollee_id` for a consolidated view.
+- **Data Validation:**
+  - Checked for duplicates and removed inconsistencies across all datasets.
+
+**Decision:** Cleaning focused on ensuring data consistency, accuracy, and compatibility for integration.
 
 ---
 
-### **5. City Development Index**
-- **Description:** Measures the level of development in cities.
-- **Columns:** Development indices of various cities.
-- **Source:** [City Development Index](https://sca-programming-school.github.io/city_development_index/index.html)
-
----
-
-### **6. Employment**
-- **Description:** Indicates employment status after course completion.
-- **Source:** MySQL Database
-  - **Host:** `112.213.86.31`
-  - **Port:** `3360`
-  - **Login:** `etl_practice`
-  - **Password:** `550814`
-  - **Database Name:** `company_course`
-  - **Table Name:** `employment`
-
----
-
-## Steps in the Analysis
-
-### **1. Extract Data**
-Data is sourced from:
-- Google Sheets
-- Remote Excel and CSV files
-- MySQL database
-- HTML web pages
-
-Each dataset is checked for proper loading before transformation.
-
----
-
-### **2. Transform Data**
-Data cleaning and transformation include:
-- Fixing data types for consistency.
-- Handling missing values by filling them with appropriate values (e.g., mode or placeholder).
-- Converting columns to suitable types such as `category` or `string`.
-
-**Example Transformation:**
-- `gender` column in `Enrollies` dataset:
-  - Missing values filled with mode (`fillna`).
-  - Converted to `category` type.
-
----
-
-### **3. Load Data**
-The cleaned datasets are loaded into a SQLite database as a Data Warehouse for further analysis:
-- Database file: `data_warehouse.db`
-- Tables:
+### **3. Data Loading**
+- Cleaned data was loaded into a SQLite database (`data_warehouse.db`) to serve as a centralized Data Warehouse.
+- Database Tables:
   - `Enrollies`
   - `Education`
   - `Working_Experience`
@@ -111,15 +74,42 @@ The cleaned datasets are loaded into a SQLite database as a Data Warehouse for f
   - `Cities`
   - `Employment`
 
+**Decision:** SQLite was chosen for its simplicity and compatibility with Python for ETL operations.
+
 ---
 
-## Technologies Used
-- **Libraries:** 
-  - `pandas`, `numpy`, `sqlalchemy`, `requests`, `pymysql`
-- **Tools:**
-  - Google Colab
-  - MySQL
-  - SQLite
-- **Programming Language:** Python
+### **4. Scheduling the ETL Process**
+The ETL process is automated and scheduled using Windows Task Scheduler. 
+
+#### Instructions for Scheduling on Windows:
+1. **Save the Script:**
+   - Save your ETL Python script as `etl_process.py`.
+
+2. **Create a Batch File:**
+   - Create a `.bat` file with the following content:
+     ```batch
+     python "C:\path\to\etl_process.py"
+     ```
+
+3. **Open Task Scheduler:**
+   - Search for "Task Scheduler" in the Windows search bar and open it.
+
+4. **Create a New Task:**
+   - Click **Create Task**.
+   - Provide a name for your task (e.g., "HR ETL Process").
+
+5. **Set Trigger:**
+   - Go to the **Triggers** tab.
+   - Click **New** and set a schedule (e.g., daily at 2:00 AM).
+
+6. **Set Action:**
+   - Go to the **Actions** tab.
+   - Click **New** and select **Start a Program**.
+   - Browse to the `.bat` file you created.
+
+7. **Save and Run:**
+   - Save the task and test it by running it manually.
+
+**Decision:** Windows Task Scheduler was chosen for its accessibility and ease of use on most systems.
 
 ---
